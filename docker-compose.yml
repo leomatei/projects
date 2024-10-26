@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  # Serviciul pentru baza de date PostgreSQL
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: portfolio_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Fisier pentru a inițializa tabelele
+
+  # Serviciul pentru backend-ul NestJS
+  backend:
+    build: ./backend # Folosim Dockerfile din directorul backend
+    volumes:
+      - ./backend/src:/app/src # Sincronizăm codul backend pentru hot-reload
+      - /app/node_modules # Evităm suprascrierea modulelor Node.js
+    ports:
+      - '3000:3000' # Portul backend-ului NestJS
+    depends_on:
+      - db
+    command: npm run start:dev # Pornim backend-ul cu hot-reload folosind NestJS
+
+  frontend:
+    build: ./frontend # Use Dockerfile from the frontend directory
+    volumes:
+      - ./frontend/src:/app/src # Sync frontend code for hot-reload
+      - /app/node_modules # Prevent overwriting Node.js modules
+    ports:
+      - '3001:3000' # Expose React port
+    depends_on:
+      - backend # Wait for the backend to start
+    command: npm run start-watch # Start the React app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
