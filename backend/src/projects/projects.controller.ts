@@ -10,7 +10,13 @@ import {
 import { SeedDatabase } from '../seed';
 import { ProjectsService } from './projects.service';
 import { Project } from './project.entity';
-
+interface projectDTO {
+  id: number;
+  title: string;
+  description: string;
+  link: string;
+  images: Array<string>;
+}
 @Controller('projects')
 export class ProjectsController {
   constructor(
@@ -35,7 +41,7 @@ export class ProjectsController {
   }
 
   @Post()
-  create(@Body() project: Project) {
+  create(@Body() project: projectDTO) {
     return this.projectsService.create(project);
   }
 

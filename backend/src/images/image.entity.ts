@@ -6,5 +6,5 @@ export class Image {
   id: number;
 
   @Column({ type: 'bytea' })
-  image_data: Buffer;
+  image_data: string;
 }

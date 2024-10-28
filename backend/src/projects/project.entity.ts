@@ -21,9 +21,6 @@ export class Project {
   @Column()
   link: string;
 
-  @Column({ default: true })
-  status: boolean;
-
   @ManyToMany(() => Image)
   @JoinTable()
   images: Image[];
