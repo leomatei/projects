@@ -17,19 +17,16 @@ export class SeedDatabase {
           title: 'Proiect 1',
           description: 'Descriere pentru proiectul 1.',
           link: 'http://example.com/project1',
-          status: true,
         },
         {
           title: 'Proiect 2',
           description: 'Descriere pentru proiectul 2.',
           link: 'http://example.com/project2',
-          status: true,
         },
         {
           title: 'Proiect 3',
           description: 'Descriere pentru proiectul 3.',
           link: 'http://example.com/project3',
-          status: true,
         },
       ];
 

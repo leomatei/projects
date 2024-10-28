@@ -4,19 +4,18 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const NewProjectForm = () => {
-  const { state } = useLocation(); // Get the state passed from the ProjectsList
+  const { state } = useLocation();
   const project = state?.project;
   const { register, handleSubmit, reset, setValue } = useForm();
   const [imageData, setImageData] = useState([]);
   const navigate = useNavigate();
 
-  // Populate form fields when the project prop changes
   useEffect(() => {
     if (project) {
       setValue('title', project.title);
       setValue('description', project.description);
       setValue('link', project.link);
-      setImageData(project.images); // Set existing images if needed
+      setImageData(project.images);
     }
   }, [project, setValue]);
 
@@ -42,23 +41,21 @@ const NewProjectForm = () => {
         title: data.title,
         description: data.description,
         link: data.link,
-        images: imageData, // Send the Base64-encoded images
+        images: imageData,
       };
 
       if (project) {
-        // Update existing project
         await axios.put(
           `http://localhost:3000/api/projects/${project.id}`,
           projectData
         );
       } else {
-        // Create new project
         await axios.post('http://localhost:3000/api/projects', projectData);
       }
 
-      navigate('/'); // Redirect to the projects list
-      reset(); // Clear the form
-      setImageData([]); // Clear image data
+      navigate('/');
+      reset();
+      setImageData([]);
     } catch (error) {
       console.error('Failed to save project:', error);
     }

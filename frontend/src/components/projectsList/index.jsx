@@ -19,7 +19,7 @@ const ProjectsList = () => {
   if (error) return <div>An error occurred: {error.message}</div>;
 
   const handleEdit = (project) => {
-    navigate('/project', { state: { project } }); // Pass the selected project to the form
+    navigate('/project', { state: { project } });
   };
 
   return (

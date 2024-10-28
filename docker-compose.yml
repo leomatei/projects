@@ -1,6 +1,5 @@
 version: '3.8'
 services:
-  # Serviciul pentru baza de date PostgreSQL
   db:
     image: postgres:13
     environment:
@@ -15,34 +14,33 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com # Set your desired email
-      PGADMIN_DEFAULT_PASSWORD: admin # Set your desired password
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - '5050:80' # Exposes pgAdmin on localhost:5050
-    depends_on:
-      - db # Fisier pentru a inițializa tabelele
-
-  # Serviciul pentru backend-ul NestJS
-  backend:
-    build: ./backend # Folosim Dockerfile din directorul backend
-    volumes:
-      - ./backend/src:/app/src # Sincronizăm codul backend pentru hot-reload
-      - /app/node_modules # Evităm suprascrierea modulelor Node.js
-    ports:
-      - '3000:3000' # Portul backend-ului NestJS
+      - '5050:80'
     depends_on:
       - db
-    command: npm run start:dev # Pornim backend-ul cu hot-reload folosind NestJS
+
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend/src:/app/src
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    command: npm run start:dev
 
   frontend:
-    build: ./frontend # Use Dockerfile from the frontend directory
+    build: ./frontend
     volumes:
-      - ./frontend/src:/app/src # Sync frontend code for hot-reload
-      - /app/node_modules # Prevent overwriting Node.js modules
+      - ./frontend/src:/app/src
+      - /app/node_modules
     ports:
-      - '3001:3000' # Expose React port
+      - '3001:3000'
     depends_on:
-      - backend # Wait for the backend to start
-    command: npm run start-watch # Start the React app
+      - backend
+    command: npm run start-watch
     environment:
       - CHOKIDAR_USEPOLLING=true
