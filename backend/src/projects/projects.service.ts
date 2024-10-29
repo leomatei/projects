@@ -21,8 +21,8 @@ export class ProjectsService {
     private imageRepository: Repository<Image>,
   ) {}
 
-  findAll(): Promise<Project[]> {
-    return this.projectsRepository.find({ relations: ['images'] });
+  async findAll(): Promise<Project[]> {
+    return await this.projectsRepository.find({ relations: ['images'] });
   }
 
   async findOne(id: number): Promise<Project> {

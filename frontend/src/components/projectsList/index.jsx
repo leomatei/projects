@@ -31,6 +31,10 @@ const ProjectsList = () => {
           <a href={project.link} target='_blank' rel='noopener noreferrer'>
             View Project
           </a>
+          {!!project.images.length &&
+            project.images.map((item) => (
+              <img src={item.image_data} alt='image from project'></img>
+            ))}
           <button onClick={() => handleEdit(project)}>Edit Project</button>{' '}
         </li>
       ))}

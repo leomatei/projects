@@ -5,6 +5,6 @@ export class Image {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'bytea' })
+  @Column()
   image_data: string;
 }

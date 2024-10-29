@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -15,13 +16,12 @@ const NewProjectForm = () => {
       setValue('title', project.title);
       setValue('description', project.description);
       setValue('link', project.link);
-      setImageData(project.images);
+      setImageData(project.images || []);
     }
   }, [project, setValue]);
 
-  const handleImageChange = (event) => {
-    const files = event.target.files;
-    const promises = Array.from(files).map((file) => {
+  const onDrop = useCallback((acceptedFiles) => {
+    const imagePromises = acceptedFiles.map((file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -30,10 +30,17 @@ const NewProjectForm = () => {
       });
     });
 
-    Promise.all(promises)
-      .then((base64Images) => setImageData(base64Images))
-      .catch((error) => console.error('Error converting images: ', error));
-  };
+    Promise.all(imagePromises)
+      .then((base64Images) =>
+        setImageData((prevData) => [...prevData, ...base64Images])
+      )
+      .catch((error) => console.error('Error reading image files: ', error));
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: 'image/*',
+  });
 
   const onSubmit = async (data) => {
     try {
@@ -77,12 +84,37 @@ const NewProjectForm = () => {
       </div>
       <div>
         <label>Images</label>
-        <input
-          type='file'
-          accept='image/*'
-          multiple
-          onChange={handleImageChange}
-        />
+        <div
+          {...getRootProps()}
+          style={{
+            border: '2px dashed #ccc',
+            padding: '20px',
+            cursor: 'pointer',
+            textAlign: 'center',
+          }}
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? (
+            <p>Drop the files here ...</p>
+          ) : (
+            <p>Drag and drop images here, or click to select files</p>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+          {imageData.map((img, index) => (
+            <img
+              key={index}
+              src={img}
+              alt={`Uploaded Preview ${index}`}
+              style={{
+                width: '100px',
+                height: '100px',
+                objectFit: 'cover',
+                borderRadius: '5px',
+              }}
+            />
+          ))}
+        </div>
       </div>
       <button type='submit'>
         {project ? 'Update Project' : 'Create Project'}
