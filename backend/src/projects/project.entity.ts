@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Image } from '../images/image.entity';
 
 @Entity()
@@ -21,7 +15,6 @@ export class Project {
   @Column()
   link: string;
 
-  @ManyToMany(() => Image)
-  @JoinTable()
+  @OneToMany(() => Image, (image) => image.project, { cascade: true })
   images: Image[];
 }

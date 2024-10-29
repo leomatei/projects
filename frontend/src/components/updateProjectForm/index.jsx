@@ -2,12 +2,32 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const NewProjectForm = () => {
+const fetchProjectData = async (id) => {
+  const response = await axios.get(`http://localhost:3000/api/projects/${id}`);
+  return response.data;
+};
+
+const UpdateProjectForm = () => {
+  const params = useParams();
+
   const { register, handleSubmit, reset, setValue } = useForm();
   const [imageData, setImageData] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchProjectData(params.id)
+      .then((project) => {
+        if (project) {
+          setValue('title', project.title);
+          setValue('description', project.description);
+          setValue('link', project.link);
+          setImageData(project.images || []);
+        }
+      })
+      .catch((err) => console.error('An error has occured', err));
+  }, []);
 
   const onDrop = useCallback((acceptedFiles) => {
     const imagePromises = acceptedFiles.map((file) => {
@@ -39,7 +59,11 @@ const NewProjectForm = () => {
         link: data.link,
         images: imageData,
       };
-      await axios.post('http://localhost:3000/api/projects', projectData);
+
+      await axios.put(
+        `http://localhost:3000/api/projects/${params.id}`,
+        projectData
+      );
 
       navigate('/');
       reset();
@@ -97,9 +121,9 @@ const NewProjectForm = () => {
           ))}
         </div>
       </div>
-      <button type='submit'>Create Project</button>
+      <button type='submit'>Update Project</button>
     </form>
   );
 };
 
-export default NewProjectForm;
+export default UpdateProjectForm;

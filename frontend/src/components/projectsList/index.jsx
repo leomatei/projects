@@ -19,7 +19,7 @@ const ProjectsList = () => {
   if (error) return <div>An error occurred: {error.message}</div>;
 
   const handleEdit = (project) => {
-    navigate('/project', { state: { project } });
+    navigate(`/project/${project.id}`);
   };
 
   return (
@@ -33,7 +33,11 @@ const ProjectsList = () => {
           </a>
           {!!project.images.length &&
             project.images.map((item) => (
-              <img src={item.image_data} alt='image from project'></img>
+              <img
+                key={`image_id${item.id}, project id${project.id}`}
+                src={item.image_data}
+                alt={`image id:${item.id} from project id:${project.id}`}
+              ></img>
             ))}
           <button onClick={() => handleEdit(project)}>Edit Project</button>{' '}
         </li>

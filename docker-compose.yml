@@ -42,3 +42,11 @@ services:
     command: npm run start-watch
     environment:
       - CHOKIDAR_USEPOLLING=true
+    develop:
+      watch:
+        - path: ./frontend/src
+          action: sync
+          target: /app/src
+        - path: ./frontend/package.json
+          action: rebuild
+          target: /app/package.json

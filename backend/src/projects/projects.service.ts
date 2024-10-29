@@ -3,14 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './project.entity';
 import { Image } from 'src/images/image.entity';
-
-interface projectDTO {
-  id: number;
-  title: string;
-  description: string;
-  link: string;
-  images: Array<string>;
-}
+import { newProjectDTO } from './project.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -32,7 +25,7 @@ export class ProjectsService {
     });
   }
 
-  async create(project: projectDTO): Promise<Project> {
+  async create(project: newProjectDTO): Promise<Project> {
     const { images, ...restOfTheProject } = project;
     const savedImages = await Promise.all(
       images.map((image) => {
@@ -50,7 +43,8 @@ export class ProjectsService {
   }
 
   async update(id: number, project: Partial<Project>): Promise<Project> {
-    await this.projectsRepository.update(id, project);
+    const { images, ...partialProject } = project;
+    await this.projectsRepository.update(id, partialProject);
     return this.projectsRepository.findOne({ where: { id } });
   }
 
