@@ -27,14 +27,14 @@ const UpdateProjectForm = () => {
         }
       })
       .catch((err) => console.error('An error has occured', err));
-  }, []);
+  }, [params.id, setValue]);
 
   const onDrop = useCallback((acceptedFiles) => {
     const imagePromises = acceptedFiles.map((file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => resolve({ image_data: reader.result });
         reader.onerror = reject;
       });
     });
@@ -109,7 +109,7 @@ const UpdateProjectForm = () => {
           {imageData.map((img, index) => (
             <img
               key={index}
-              src={img}
+              src={img.image_data}
               alt={`Uploaded Preview ${index}`}
               style={{
                 width: '100px',

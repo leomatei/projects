@@ -27,24 +27,24 @@ export class ProjectsService {
 
   async create(project: newProjectDTO): Promise<Project> {
     const { images, ...restOfTheProject } = project;
-    const savedImages = await Promise.all(
+    const newProject = await this.projectsRepository.save(restOfTheProject);
+    await Promise.all(
       images.map((image) => {
         const newImage = new Image();
         newImage.image_data = image;
+        newImage.project = newProject.id;
         return this.imageRepository.save(newImage);
       }),
     );
-    const projectToCreate: Project = {
-      ...restOfTheProject,
-      images: savedImages,
-    };
-    const newProject = this.projectsRepository.create(projectToCreate);
-    return this.projectsRepository.save(newProject);
+    return newProject;
   }
 
   async update(id: number, project: Partial<Project>): Promise<Project> {
     const { images, ...partialProject } = project;
     await this.projectsRepository.update(id, partialProject);
+    await Promise.all(
+      images.map((item) => this.imageRepository.save({ ...item, project: id })),
+    );
     return this.projectsRepository.findOne({ where: { id } });
   }
 
