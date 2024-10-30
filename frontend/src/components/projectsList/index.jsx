@@ -1,5 +1,5 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './styles.scss';
@@ -10,11 +10,15 @@ const fetchProjects = async () => {
 };
 
 const ProjectsList = () => {
+  const queryClient = useQueryClient();
   const { data, error, isLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: fetchProjects,
   });
   const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
@@ -22,13 +26,40 @@ const ProjectsList = () => {
   const handleEdit = (project) => {
     navigate(`/project/${project.id}`);
   };
-  const handleDelete = (prpject) => {};
+  const handleDelete = (project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(
+        `http://localhost:3000/api/projects/${selectedProject.id}`
+      );
+
+      queryClient.invalidateQueries(['projects']);
+      setIsModalOpen(false);
+      setSelectedProject(null);
+    } catch (error) {
+      console.error('Failed to delete project', error);
+    }
+  };
+  const cancelDelete = () => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+  };
 
   return (
     <div className='home-page'>
-      <div className='modal-overlay'>
-        <div className='modal'>modal</div>
-      </div>
+      {isModalOpen && (
+        <div className='modal-overlay'>
+          <div className='modal'>
+            <h3>Are you sure you want to delete this project?</h3>
+            <p>{selectedProject?.title}</p>
+            <button onClick={confirmDelete}>Confirm</button>
+            <button onClick={cancelDelete}>Cancel</button>
+          </div>
+        </div>
+      )}
       <ul>
         {data.map((project) => (
           <li key={project.id}>
@@ -46,7 +77,7 @@ const ProjectsList = () => {
                 ></img>
               ))}
             <button onClick={() => handleEdit(project)}>Edit Project</button>
-            <button onClick={() => console.log('deleted')}>
+            <button onClick={() => handleDelete(project)}>
               Delete Project
             </button>
           </li>

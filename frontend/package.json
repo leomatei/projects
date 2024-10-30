@@ -7,20 +7,23 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@vitejs/plugin-react": "^4.3.3",
     "axios": "^1.7.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.10",
     "react-hook-form": "^7.53.1",
     "react-router-dom": "^6.27.0",
-    "react-scripts": "5.0.1",
     "sass": "^1.80.5",
+    "sass-loader": "^16.0.2",
+    "vite": "^5.4.10",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "start-watch": "WATCHPACK_POLLING=true react-scripts start",
-    "build": "react-scripts build",
+    "dev": "vite --port 3001",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "webpack serve --mode development",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -43,6 +46,10 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.9",
+    "babel-loader": "^9.2.1"
   }
 }
