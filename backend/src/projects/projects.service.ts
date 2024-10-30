@@ -32,7 +32,7 @@ export class ProjectsService {
       images.map((image) => {
         const newImage = new Image();
         newImage.image_data = image;
-        newImage.project = newProject.id;
+        newImage.project = newProject;
         return this.imageRepository.save(newImage);
       }),
     );
@@ -41,9 +41,17 @@ export class ProjectsService {
 
   async update(id: number, project: Partial<Project>): Promise<Project> {
     const { images, ...partialProject } = project;
-    await this.projectsRepository.update(id, partialProject);
+    const updatedProject = await this.projectsRepository.save({
+      id,
+      ...partialProject,
+    });
     await Promise.all(
-      images.map((item) => this.imageRepository.save({ ...item, project: id })),
+      images.map((item) => {
+        const newImage = new Image();
+        newImage.image_data = item.image_data;
+        newImage.project = updatedProject;
+        return this.imageRepository.save({ ...item, project: updatedProject });
+      }),
     );
     return this.projectsRepository.findOne({ where: { id } });
   }

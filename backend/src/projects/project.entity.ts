@@ -6,13 +6,13 @@ export class Project {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 255 })
   title: string;
 
-  @Column()
+  @Column('text', { nullable: true })
   description: string;
 
-  @Column()
+  @Column({ length: 255, nullable: true })
   link: string;
 
   @OneToMany(() => Image, (image) => image.project, { cascade: true })

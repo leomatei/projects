@@ -1,11 +1,6 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Project } from 'src/projects/project.entity';
+
 @Entity()
 export class Image {
   @PrimaryGeneratedColumn()
@@ -13,12 +8,9 @@ export class Image {
 
   @ManyToOne(() => Project, (project) => project.images, {
     onDelete: 'CASCADE',
-    eager: true,
-    nullable: false,
   })
-  @JoinColumn({ name: 'projectId' })
-  project: number;
+  project: Project;
 
-  @Column()
+  @Column('text')
   image_data: string;
 }
