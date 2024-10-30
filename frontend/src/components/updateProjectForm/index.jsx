@@ -46,6 +46,12 @@ const UpdateProjectForm = () => {
       .catch((error) => console.error('Error reading image files: ', error));
   }, []);
 
+  const removeImage = (indexToRemove) => {
+    setImageData((prevData) =>
+      prevData.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: 'image/*',
@@ -107,17 +113,37 @@ const UpdateProjectForm = () => {
         </div>
         <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
           {imageData.map((img, index) => (
-            <img
-              key={index}
-              src={img.image_data}
-              alt={`Uploaded Preview ${index}`}
-              style={{
-                width: '100px',
-                height: '100px',
-                objectFit: 'cover',
-                borderRadius: '5px',
-              }}
-            />
+            <div key={index} style={{ position: 'relative' }}>
+              <img
+                key={index}
+                src={img.image_data}
+                alt={`Uploaded Preview ${index}`}
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  objectFit: 'cover',
+                  borderRadius: '5px',
+                }}
+              />
+              <button
+                type='button'
+                onClick={() => removeImage(index)}
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  right: '5px',
+                  backgroundColor: 'red',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '20px',
+                  height: '20px',
+                  cursor: 'pointer',
+                }}
+              >
+                &times;
+              </button>
+            </div>
           ))}
         </div>
       </div>
