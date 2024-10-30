@@ -5,9 +5,9 @@ import { Image } from 'src/images/image.entity';
 import { ProjectsService } from './projects.service';
 import { ProjectsController } from './projects.controller';
 import { SeedDatabase } from './../seed';
-
+import { ImagesModule } from './../images/images.module';
 @Module({
-  imports: [TypeOrmModule.forFeature([Project, Image])],
+  imports: [TypeOrmModule.forFeature([Project, Image]), ImagesModule],
   controllers: [ProjectsController],
   providers: [ProjectsService, SeedDatabase],
   exports: [ProjectsService],

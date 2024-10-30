@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './project.entity';
-import { Image } from 'src/images/image.entity';
+import { ImagesService } from 'src/images/images.service';
 import { newProjectDTO } from './project.dto';
 
 @Injectable()
@@ -10,8 +10,7 @@ export class ProjectsService {
   constructor(
     @InjectRepository(Project)
     private projectsRepository: Repository<Project>,
-    @InjectRepository(Image)
-    private imageRepository: Repository<Image>,
+    private imageService: ImagesService,
   ) {}
 
   async findAll(): Promise<Project[]> {
@@ -30,10 +29,10 @@ export class ProjectsService {
     const newProject = await this.projectsRepository.save(restOfTheProject);
     await Promise.all(
       images.map((image) => {
-        const newImage = new Image();
-        newImage.image_data = image;
-        newImage.project = newProject;
-        return this.imageRepository.save(newImage);
+        return this.imageService.create({
+          image_data: image,
+          project: newProject,
+        });
       }),
     );
     return newProject;
@@ -41,19 +40,30 @@ export class ProjectsService {
 
   async update(id: number, project: Partial<Project>): Promise<Project> {
     const { images, ...partialProject } = project;
-    const updatedProject = await this.projectsRepository.save({
-      id,
-      ...partialProject,
+    await this.projectsRepository.update(id, partialProject);
+    const updatedProject = await this.projectsRepository.findOne({
+      where: { id },
+      relations: ['images'],
     });
+    const initialImages = updatedProject.images;
+    const imagesToDelete = initialImages.filter(
+      (image) =>
+        !images.filter((item) => item.image_data === image.image_data).length,
+    );
     await Promise.all(
-      images.map((item) => {
-        const newImage = new Image();
-        newImage.image_data = item.image_data;
-        newImage.project = updatedProject;
-        return this.imageRepository.save({ ...item, project: updatedProject });
+      imagesToDelete.map((item) => this.imageService.delete(item.id)),
+    );
+    const imagesToAdd = images.filter(
+      (image) =>
+        !initialImages.filter((item) => item.image_data === image.image_data)
+          .length,
+    );
+    await Promise.all(
+      imagesToAdd.map((item) => {
+        return this.imageService.create({ ...item, project: updatedProject });
       }),
     );
-    return this.projectsRepository.findOne({ where: { id } });
+    return updatedProject;
   }
 
   async remove(id: number): Promise<void> {
