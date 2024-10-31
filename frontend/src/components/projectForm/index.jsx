@@ -17,7 +17,6 @@ const ProjectForm = ({
     getInputProps,
     isDragActive,
   } = useImageUploader();
-  console.log(initialData);
 
   useEffect(() => {
     if (initialData) {

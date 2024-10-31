@@ -9,7 +9,7 @@ import { useModal } from '../../customHooks/modalContext';
 import { deleteProject } from '../../services/projectServices';
 import './styles.scss';
 
-const ProjectItem = ({ project, onDelete }) => {
+const ProjectItem = ({ project }) => {
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -44,10 +44,12 @@ const ProjectItem = ({ project, onDelete }) => {
       onCancel: closeModal,
     });
   };
-  const handleClickImage = () => {
+  const handleClickImage = (imageIndex) => {
     openModal({
       title: `Images for ${project.title}`,
-      content: <ImageSliderModal images={project.images} />,
+      content: (
+        <ImageSliderModal images={project.images} initialSlide={imageIndex} />
+      ),
       onCancel: closeModal,
     });
   };
@@ -66,7 +68,7 @@ const ProjectItem = ({ project, onDelete }) => {
       </a>
       {project.images.length > 0 && (
         <Slider {...sliderSettings} className='project-item__slider'>
-          {project.images.map((item) => (
+          {project.images.map((item, index) => (
             <div
               key={item.id}
               className='project-item__slider__image-container'
@@ -75,7 +77,7 @@ const ProjectItem = ({ project, onDelete }) => {
                 src={item.image_data}
                 alt={`Image ${item.id} of Project ${project.id}`}
                 className='project-item__slider__image-container__image'
-                onClick={handleClickImage}
+                onClick={() => handleClickImage(index)}
               />
             </div>
           ))}
