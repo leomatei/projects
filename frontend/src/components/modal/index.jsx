@@ -10,7 +10,9 @@ const Modal = ({ title, children, onCancel = () => {} }) => {
       <div className='modal' ref={modalRef}>
         <h3>{title}</h3>
         {children}
-        <button onClick={onCancel}>Cancel</button>
+        <button className='modal-button' onClick={onCancel}>
+          Cancel
+        </button>
       </div>
     </div>
   );

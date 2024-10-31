@@ -22,3 +22,15 @@ code {
 html {
   font-size: 16px;
 }
+
+.delete-button {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #e63946;
+}

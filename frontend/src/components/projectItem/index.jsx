@@ -25,8 +25,12 @@ const ProjectItem = ({ project }) => {
       title: 'Are you sure you want to delete this project?',
       content: (
         <>
-          <p>{project.title}</p>
+          <div className='delete-modal__text'>
+            <p>{project.title}</p>
+            <p>{project.description}</p>
+          </div>
           <button
+            className='modal-button delete-button'
             onClick={async () => {
               try {
                 await deleteProject(project.id);
@@ -93,7 +97,7 @@ const ProjectItem = ({ project }) => {
         </a>
         <button
           onClick={() => handleDelete(project)}
-          className='project-item__actions__delete'
+          className='project-item__actions__delete delete-button'
         >
           <DeleteSVG width='20px' height='20px' />
           Delete Project

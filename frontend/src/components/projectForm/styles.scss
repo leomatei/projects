@@ -1,32 +1,138 @@
+.project-form {
+  background-color: #f9f9f9;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 2rem auto;
+
+  &__title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  &__field {
+    margin-bottom: 1.25rem;
+
+    &__label {
+      display: block;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    &__input,
+    &__textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-size: 1rem;
+
+      &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+        outline: none;
+      }
+    }
+
+    &__textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .error-text {
+      color: #e63946;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .character-count {
+      font-size: 0.875rem;
+      color: #888;
+      margin-top: 0.25rem;
+      text-align: right;
+    }
+  }
+
+  button[type='submit'] {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}
+
 .image-uploader-wrapper {
-  border: 2px dashed #ccc;
-  padding: 20px;
+  border: 2px dashed #007bff;
+  padding: 1rem;
   cursor: pointer;
   text-align: center;
+  border-radius: 6px;
+  color: #555;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
 }
+
 .images-preview {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  flex-wrap: wrap;
+
   .image-wrapper {
     position: relative;
+
     .image {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       object-fit: cover;
       border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: scale(1.05);
+      }
     }
-    .delete-button {
+
+    .remove-button {
       position: absolute;
-      top: 5px;
-      right: 5px;
-      background-color: red;
+      top: -8px;
+      right: -8px;
+      background-color: #e63946;
       color: white;
       border: none;
       border-radius: 50%;
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #d62828;
+      }
     }
   }
 }

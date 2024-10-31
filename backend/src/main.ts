@@ -9,8 +9,8 @@ async function bootstrap() {
     credentials: true,
   });
   app.setGlobalPrefix('api');
-  app.use(json({ limit: '1mb' }));
-  app.use(urlencoded({ extended: true, limit: '1mb' }));
+  app.use(json({ limit: '11mb' }));
+  app.use(urlencoded({ extended: true, limit: '11mb' }));
   await app.listen(3000);
 }
 bootstrap();

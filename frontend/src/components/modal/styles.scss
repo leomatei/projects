@@ -13,10 +13,19 @@
     background-color: #fff;
     padding: 2rem;
     border-radius: 8px;
-    max-width: 500px;
-    width: 90%;
+    width: 60%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     text-align: center;
     z-index: 3;
+    .modal-button {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      margin: 0 1rem;
+    }
   }
 }
