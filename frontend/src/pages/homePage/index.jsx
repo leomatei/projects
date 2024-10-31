@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Modal from '../../components/modal';
 import { useModal } from '../../customHooks/modalContext';
 
-import { fetchProjects, deleteProject } from '../../services/projectServices';
+import { fetchProjects } from '../../services/projectServices';
 
 import PlusSVG from './../../assets/plus.svg?react';
 import ProjectList from '../../components/projectsList';
@@ -12,38 +12,12 @@ import ProjectList from '../../components/projectsList';
 import './styles.scss';
 
 const HomePage = () => {
-  const queryClient = useQueryClient();
   const { data, error, isLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: fetchProjects,
   });
 
-  const { isModalOpen, modalData, openModal, closeModal } = useModal();
-
-  const handleDelete = (project) => {
-    openModal({
-      title: 'Are you sure you want to delete this project?',
-      content: (
-        <>
-          <p>{project.title}</p>
-          <button
-            onClick={async () => {
-              try {
-                await deleteProject(project.id);
-                queryClient.invalidateQueries(['projects']);
-                closeModal();
-              } catch (error) {
-                console.error('Failed to delete project', error);
-              }
-            }}
-          >
-            Confirm
-          </button>
-        </>
-      ),
-      onCancel: closeModal,
-    });
-  };
+  const { isModalOpen, modalData } = useModal();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
@@ -75,7 +49,7 @@ const HomePage = () => {
         </a>
         <button className='custom-button'>Add 10 more dummy projects</button>
       </div>
-      <ProjectList data={data} onDelete={handleDelete} />
+      <ProjectList data={data} />
     </div>
   );
 };

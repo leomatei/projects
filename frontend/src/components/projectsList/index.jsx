@@ -3,11 +3,11 @@ import ProjectItem from '../projectItem';
 
 import './styles.scss';
 
-const ProjectList = ({ data, onDelete }) => {
+const ProjectList = ({ data }) => {
   return (
     <ul className='project-list'>
       {data.map((project) => (
-        <ProjectItem key={project.id} project={project} onDelete={onDelete} />
+        <ProjectItem key={project.id} project={project} />
       ))}
     </ul>
   );

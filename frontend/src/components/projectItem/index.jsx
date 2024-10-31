@@ -4,7 +4,9 @@ import EditSVG from './../../assets/edit.svg?react';
 import ClickSVG from './../../assets/click.svg?react';
 import DeleteSVG from './../../assets/delete.svg?react';
 import ImageSliderModal from '../imageSliderModal';
+import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '../../customHooks/modalContext';
+import { deleteProject } from '../../services/projectServices';
 import './styles.scss';
 
 const ProjectItem = ({ project, onDelete }) => {
@@ -16,7 +18,32 @@ const ProjectItem = ({ project, onDelete }) => {
     slidesToScroll: 1,
     arrows: true,
   };
+  const queryClient = useQueryClient();
   const { openModal, closeModal } = useModal();
+  const handleDelete = (project) => {
+    openModal({
+      title: 'Are you sure you want to delete this project?',
+      content: (
+        <>
+          <p>{project.title}</p>
+          <button
+            onClick={async () => {
+              try {
+                await deleteProject(project.id);
+                queryClient.invalidateQueries(['projects']);
+                closeModal();
+              } catch (error) {
+                console.error('Failed to delete project', error);
+              }
+            }}
+          >
+            Confirm
+          </button>
+        </>
+      ),
+      onCancel: closeModal,
+    });
+  };
   const handleClickImage = () => {
     openModal({
       title: `Images for ${project.title}`,
@@ -63,7 +90,7 @@ const ProjectItem = ({ project, onDelete }) => {
           Edit Project
         </a>
         <button
-          onClick={() => onDelete(project)}
+          onClick={() => handleDelete(project)}
           className='project-item__actions__delete'
         >
           <DeleteSVG width='20px' height='20px' />
