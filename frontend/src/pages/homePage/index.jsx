@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import DeleteProjectModal from '../../components/deleteProjectModal';
+import Modal from '../../components/modal';
 import { useModal } from '../../customHooks/modalContext';
 
 import { fetchProjects, deleteProject } from '../../services/projectServices';
@@ -22,16 +22,25 @@ const HomePage = () => {
 
   const handleDelete = (project) => {
     openModal({
-      content: project.title,
-      onConfirm: async () => {
-        try {
-          await deleteProject(project.id);
-          queryClient.invalidateQueries(['projects']);
-          closeModal();
-        } catch (error) {
-          console.error('Failed to delete project', error);
-        }
-      },
+      title: 'Are you sure you want to delete this project?',
+      content: (
+        <>
+          <p>{project.title}</p>
+          <button
+            onClick={async () => {
+              try {
+                await deleteProject(project.id);
+                queryClient.invalidateQueries(['projects']);
+                closeModal();
+              } catch (error) {
+                console.error('Failed to delete project', error);
+              }
+            }}
+          >
+            Confirm
+          </button>
+        </>
+      ),
       onCancel: closeModal,
     });
   };
@@ -41,7 +50,11 @@ const HomePage = () => {
 
   return (
     <div className='home-page'>
-      {isModalOpen && <DeleteProjectModal {...modalData} />}
+      {isModalOpen && (
+        <Modal title={modalData.title} onCancel={modalData.onCancel}>
+          {modalData.content}
+        </Modal>
+      )}
       <h1 className='home-page__title'>Portfolio Website</h1>
       <p className='home-page__description'>
         <span>

@@ -1,0 +1,25 @@
+@import '/node_modules/react-medium-image-zoom/dist/styles.css';
+.image-slider-modal__slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-slider-modal__image {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.slick-slider {
+  margin-bottom: 2rem;
+}
+.slick-prev,
+.slick-next {
+  &::before {
+    color: black !important;
+    font-size: 1.5rem !important;
+    z-index: 1;
+  }
+}
