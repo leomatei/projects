@@ -1,5 +1,7 @@
 import React from 'react';
-
+import EditSVG from './../../assets/edit.svg?react';
+import ClickSVG from './../../assets/click.svg?react';
+import DeleteSVG from './../../assets/delete.svg?react';
 import './styles.scss';
 
 const ProjectItem = ({ project, onDelete }) => {
@@ -13,6 +15,7 @@ const ProjectItem = ({ project, onDelete }) => {
         rel='noopener noreferrer'
         className='project-item__link'
       >
+        <ClickSVG width='20px' height='20px' />
         View Project
       </a>
       {project.images.length > 0 &&
@@ -29,12 +32,14 @@ const ProjectItem = ({ project, onDelete }) => {
           href={`/project/${project.id}`}
           className='project-item__actions__edit'
         >
+          <EditSVG width='20px' height='20px' />
           Edit Project
         </a>
         <button
           onClick={() => onDelete(project)}
           className='project-item__actions__delete'
         >
+          <DeleteSVG width='20px' height='20px' />
           Delete Project
         </button>
       </div>

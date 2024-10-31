@@ -5,6 +5,8 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   color: white;
   background-color: #0d92f4;
+  font-size: 1rem;
+  line-height: 1.5rem;
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -20,8 +22,6 @@
   &__link {
     color: white;
     font-weight: 600;
-    font-size: 1rem;
-    line-height: 1.5rem;
     text-decoration: none;
     margin-bottom: 1rem;
     display: inline-block;
@@ -44,6 +44,9 @@
       cursor: pointer;
       text-decoration: none;
       text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
     }
 
     &__edit {
@@ -52,6 +55,8 @@
     }
 
     &__delete {
+      font-size: 1rem;
+      line-height: 1.5rem;
       background: #e63946;
     }
   }
