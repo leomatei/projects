@@ -1,0 +1,11 @@
+.project-list {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 8px;
+  color: white;
+}

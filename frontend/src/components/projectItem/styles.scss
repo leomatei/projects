@@ -1,0 +1,58 @@
+.project-item {
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: white;
+  background-color: #0d92f4;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  &__title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  &__description {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  &__link {
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    display: inline-block;
+    border: 2px solid white;
+    border-radius: 16px;
+    padding: 0.25rem;
+  }
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    &__edit,
+    &__delete {
+      background: #0d92f4;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    &__edit {
+      border: 2px solid white;
+      padding: 0.25rem;
+    }
+
+    &__delete {
+      background: #e63946;
+    }
+  }
+}

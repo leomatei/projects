@@ -9,7 +9,7 @@ export const useImageUploader = (initialImages = []) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => resolve({ image_data: reader.result });
         reader.onerror = reject;
       });
     });
