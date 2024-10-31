@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './styles.scss';
 
-const fetchProjects = async () => {
-  const response = await axios.get('http://localhost:3000/api/projects');
-  return response.data;
-};
+import DeleteProjectModal from '../../components/deleteProjectModal';
+import { useModal } from '../../customHooks/modalContext';
+
+import { fetchProjects, deleteProject } from '../../services/projectServices';
+
+import './styles.scss';
 
 const ProjectsList = () => {
   const queryClient = useQueryClient();
@@ -17,8 +17,7 @@ const ProjectsList = () => {
   });
   const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const { isModalOpen, modalData, openModal, closeModal } = useModal();
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
@@ -27,39 +26,24 @@ const ProjectsList = () => {
     navigate(`/project/${project.id}`);
   };
   const handleDelete = (project) => {
-    setSelectedProject(project);
-    setIsModalOpen(true);
-  };
-  const confirmDelete = async () => {
-    try {
-      await axios.delete(
-        `http://localhost:3000/api/projects/${selectedProject.id}`
-      );
-
-      queryClient.invalidateQueries(['projects']);
-      setIsModalOpen(false);
-      setSelectedProject(null);
-    } catch (error) {
-      console.error('Failed to delete project', error);
-    }
-  };
-  const cancelDelete = () => {
-    setIsModalOpen(false);
-    setSelectedProject(null);
+    openModal({
+      content: project.title,
+      onConfirm: async () => {
+        try {
+          await deleteProject(project.id);
+          queryClient.invalidateQueries(['projects']);
+          closeModal();
+        } catch (error) {
+          console.error('Failed to delete project', error);
+        }
+      },
+      onCancel: closeModal,
+    });
   };
 
   return (
     <div className='home-page'>
-      {isModalOpen && (
-        <div className='modal-overlay'>
-          <div className='modal'>
-            <h3>Are you sure you want to delete this project?</h3>
-            <p>{selectedProject?.title}</p>
-            <button onClick={confirmDelete}>Confirm</button>
-            <button onClick={cancelDelete}>Cancel</button>
-          </div>
-        </div>
-      )}
+      {isModalOpen && <DeleteProjectModal {...modalData} />}
       <ul>
         {data.map((project) => (
           <li key={project.id}>

@@ -1,56 +1,47 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useImageUploader } from '../../customHooks/useImageUploader';
 
-const NewProjectForm = () => {
-  const { register, handleSubmit, reset } = useForm();
-  const [imageData, setImageData] = useState([]);
-  const navigate = useNavigate();
+import './styles.scss';
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const imagePromises = acceptedFiles.map((file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-      });
-    });
+const ProjectForm = ({
+  onSubmit,
+  initialData = { title: '', description: '', link: '', images: [] },
+}) => {
+  const { register, handleSubmit, reset, setValue } = useForm();
+  const {
+    imageData,
+    setImageData,
+    removeImage,
+    getRootProps,
+    getInputProps,
+    isDragActive,
+  } = useImageUploader();
+  console.log(initialData);
 
-    Promise.all(imagePromises)
-      .then((base64Images) =>
-        setImageData((prevData) => [...prevData, ...base64Images])
-      )
-      .catch((error) => console.error('Error reading image files: ', error));
+  useEffect(() => {
+    if (initialData) {
+      setValue('title', initialData.title);
+      setValue('description', initialData.description);
+      setValue('link', initialData.link);
+      setImageData(initialData.images);
+    }
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: 'image/*',
-  });
-
-  const onSubmit = async (data) => {
-    try {
-      const projectData = {
-        title: data.title,
-        description: data.description,
-        link: data.link,
-        images: imageData,
-      };
-      await axios.post('http://localhost:3000/api/projects', projectData);
-
-      navigate('/');
-      reset();
-      setImageData([]);
-    } catch (error) {
-      console.error('Failed to save project:', error);
-    }
+  const handleFormSubmit = async (data) => {
+    const projectData = {
+      title: data.title,
+      description: data.description,
+      link: data.link,
+      images: imageData,
+    };
+    reset();
+    setImageData([]);
+    await onSubmit(projectData);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <div>
         <label>Title</label>
         <input type='text' {...register('title', { required: true })} />
@@ -65,15 +56,7 @@ const NewProjectForm = () => {
       </div>
       <div>
         <label>Images</label>
-        <div
-          {...getRootProps()}
-          style={{
-            border: '2px dashed #ccc',
-            padding: '20px',
-            cursor: 'pointer',
-            textAlign: 'center',
-          }}
-        >
+        <div className='image-uploader-wrapper' {...getRootProps()}>
           <input {...getInputProps()} />
           {isDragActive ? (
             <p>Drop the files here ...</p>
@@ -81,25 +64,30 @@ const NewProjectForm = () => {
             <p>Drag and drop images here, or click to select files</p>
           )}
         </div>
-        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+        <div className='images-preview'>
           {imageData.map((img, index) => (
-            <img
-              key={index}
-              src={img}
-              alt={`Uploaded Preview ${index}`}
-              style={{
-                width: '100px',
-                height: '100px',
-                objectFit: 'cover',
-                borderRadius: '5px',
-              }}
-            />
+            <div key={index} className='image-wrapper'>
+              <img
+                className='image'
+                src={img.image_data}
+                alt={`Uploaded Preview ${index}`}
+              />
+              <button
+                className='delete-button'
+                type='button'
+                onClick={() => removeImage(index)}
+              >
+                &times;
+              </button>
+            </div>
           ))}
         </div>
       </div>
-      <button type='submit'>Create Project</button>
+      <button type='submit'>
+        {initialData ? 'Update Project' : 'Create Project'}
+      </button>
     </form>
   );
 };
 
-export default NewProjectForm;
+export default ProjectForm;
