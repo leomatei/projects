@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { fetchProjects, seedProjects } from '../../services/projectServices';
@@ -11,9 +11,17 @@ import './styles.scss';
 
 const HomePage = () => {
   const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const limit = 10;
+  const [projects, setProjects] = useState([]);
   const { data, error, isLoading } = useQuery({
-    queryKey: ['projects'],
-    queryFn: fetchProjects,
+    queryKey: ['projects', page],
+    staleTime: 1000 * 60 * 5,
+    queryFn: () =>
+      fetchProjects(page, limit).then((res) => {
+        setProjects((prevProj) => [...prevProj, ...res?.data]);
+        return res;
+      }),
   });
 
   const handleSeedProjects = async () => {
@@ -24,6 +32,9 @@ const HomePage = () => {
     } catch (error) {
       console.error('Error seeding projects:', error);
     }
+  };
+  const handleLoadMore = () => {
+    setPage((prevPage) => prevPage + 1);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -55,7 +66,10 @@ const HomePage = () => {
             Add 10 more dummy projects
           </button>
         </div>
-        <ProjectList data={data} />
+        <ProjectList data={projects} />
+        <button className='custom-button' onClick={handleLoadMore}>
+          load moere
+        </button>
       </div>
     </ModalProvider>
   );

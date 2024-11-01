@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:3000/api/projects';
 
-export const fetchProjects = async () => {
-  const response = await axios.get(API_URL);
+export const fetchProjects = async (page = 1, limit = 10) => {
+  const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}`);
   return response.data;
 };
 

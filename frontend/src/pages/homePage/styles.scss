@@ -30,30 +30,7 @@
     width: 100%;
     display: flex;
     justify-content: space-around;
-    .custom-button {
-      font-weight: 600;
-      font-size: 1.5rem;
-      line-height: 2.75rem;
-      border-radius: 16px;
-      background-color: #0d92f4;
-      color: white;
-      padding: 0.5rem;
-      @media (max-width: 460px) {
-        display: flex;
-        font-size: 1rem;
-        line-height: 1.5rem;
-        svg {
-          width: 20px;
-          height: 20px;
-        }
-      }
-    }
-    button.custom-button {
-      border: none;
-    }
-    a.custom-button {
-      text-decoration: none;
-    }
+
     @media (max-width: 623px) {
       flex-direction: column;
       align-items: center;
@@ -63,4 +40,28 @@
       }
     }
   }
+}
+.custom-button {
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 2.75rem;
+  border-radius: 16px;
+  background-color: #0d92f4;
+  color: white;
+  padding: 0.5rem;
+  @media (max-width: 460px) {
+    display: flex;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+button.custom-button {
+  border: none;
+}
+a.custom-button {
+  text-decoration: none;
 }

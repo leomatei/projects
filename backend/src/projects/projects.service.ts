@@ -13,8 +13,16 @@ export class ProjectsService {
     private imageService: ImagesService,
   ) {}
 
-  async findAll(): Promise<Project[]> {
-    return await this.projectsRepository.find({ relations: ['images'] });
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ data: Project[]; total: number }> {
+    const [projects, total] = await this.projectsRepository.findAndCount({
+      relations: ['images'],
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+    return { data: projects, total };
   }
 
   async findOne(id: number): Promise<Project> {

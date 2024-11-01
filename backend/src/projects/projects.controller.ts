@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Project } from './project.entity';
@@ -21,8 +22,11 @@ export class ProjectsController {
   }
 
   @Get()
-  findAll() {
-    return this.projectsService.findAll();
+  async getProjects(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ): Promise<{ data: Project[]; total: number }> {
+    return this.projectsService.findAll(page, limit);
   }
 
   @Get(':id')
