@@ -9,7 +9,7 @@ import './styles.scss';
 const ProjectItem = ({ project }) => {
   const sliderSettings = {
     dots: true,
-    infinite: true,
+    infinite: project.images.length > 2 ? true : false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -33,7 +33,7 @@ const ProjectItem = ({ project }) => {
         <Slider {...sliderSettings} className='project-item__slider'>
           {project.images.map((item, index) => (
             <div
-              key={item.id}
+              key={`index${index},id${item.id}`}
               className='project-item__slider__image-container'
             >
               <img
