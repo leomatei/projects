@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectsModule } from './projects/projects.module';
 import { ImagesModule } from './images/images.module';
-import { SeedDatabase } from './seed';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -18,6 +17,5 @@ import { SeedDatabase } from './seed';
     ProjectsModule,
     ImagesModule,
   ],
-  providers: [SeedDatabase],
 })
 export class AppModule {}

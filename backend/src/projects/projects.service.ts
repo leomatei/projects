@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './project.entity';
@@ -68,5 +68,20 @@ export class ProjectsService {
 
   async remove(id: number): Promise<void> {
     await this.projectsRepository.delete(id);
+  }
+
+  async addSampleProjects(): Promise<Project[]> {
+    const sampleProjects = Array.from({ length: 10 }, (_, index) => ({
+      title: `Sample Project ${index + 1}`,
+      description: `This is the description for sample project ${index + 1}.`,
+      link: `http://example.com/sample_project_${index + 1}`,
+    }));
+
+    const projectsSved = await Promise.all(
+      sampleProjects.map((projectData) =>
+        this.projectsRepository.save(projectData),
+      ),
+    );
+    return projectsSved;
   }
 }

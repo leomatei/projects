@@ -7,20 +7,16 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
-import { SeedDatabase } from '../seed';
 import { ProjectsService } from './projects.service';
 import { Project } from './project.entity';
 import { newProjectDTO } from './project.dto';
 @Controller('projects')
 export class ProjectsController {
-  constructor(
-    private readonly projectsService: ProjectsService,
-    private readonly seedDatabase: SeedDatabase,
-  ) {}
+  constructor(private readonly projectsService: ProjectsService) {}
 
   @Get('seed')
   async seed() {
-    await this.seedDatabase.run();
+    await this.projectsService.addSampleProjects();
     return { message: 'DB has rows completed now!' };
   }
 

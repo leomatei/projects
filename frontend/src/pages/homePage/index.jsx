@@ -1,7 +1,7 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { fetchProjects } from '../../services/projectServices';
+import { fetchProjects, seedProjects } from '../../services/projectServices';
 
 import PlusSVG from './../../assets/plus.svg?react';
 import ProjectList from '../../components/projectsList';
@@ -10,10 +10,21 @@ import { ModalProvider } from '../../customHooks/modalContext';
 import './styles.scss';
 
 const HomePage = () => {
+  const queryClient = useQueryClient();
   const { data, error, isLoading } = useQuery({
     queryKey: ['projects'],
     queryFn: fetchProjects,
   });
+
+  const handleSeedProjects = async () => {
+    try {
+      await seedProjects().then(() => {
+        queryClient.invalidateQueries(['projects']);
+      });
+    } catch (error) {
+      console.error('Error seeding projects:', error);
+    }
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {error.message}</div>;
@@ -40,7 +51,9 @@ const HomePage = () => {
             <PlusSVG />
             Add Project
           </a>
-          <button className='custom-button'>Add 10 more dummy projects</button>
+          <button className='custom-button' onClick={handleSeedProjects}>
+            Add 10 more dummy projects
+          </button>
         </div>
         <ProjectList data={data} />
       </div>

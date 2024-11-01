@@ -3,7 +3,7 @@ import { Image } from '../images/image.entity';
 
 @Entity()
 export class Project {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({ length: 255 })

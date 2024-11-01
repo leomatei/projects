@@ -22,3 +22,6 @@ export const updateProject = async (id, projectData) => {
 export const deleteProject = async (id) => {
   await axios.delete(`${API_URL}/${id}`);
 };
+export const seedProjects = async () => {
+  await axios.get(`${API_URL}/seed`);
+};
