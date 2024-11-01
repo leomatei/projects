@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import BackSVG from '../../assets/back-arrow.svg?react';
-import DeleteSVG from '../../assets/delete.svg?react';
 import { useImageUploader } from '../../customHooks/useImageUploader';
-import HandleOpenModal from '../../utils/handleModals';
 
 import './styles.scss';
 
@@ -50,7 +48,6 @@ const ProjectForm = ({
     setImageData([]);
     await onSubmit(projectData);
   };
-  const { handleDelete } = HandleOpenModal();
 
   return (
     <>
