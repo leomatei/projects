@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import Modal from '../../components/modal';
 import { useModal } from '../../customHooks/modalContext';

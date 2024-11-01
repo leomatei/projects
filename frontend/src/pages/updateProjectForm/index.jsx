@@ -37,7 +37,9 @@ const UpdateProjectForm = () => {
   };
 
   return (
-    !loading && <ProjectForm onSubmit={handleSubmit} initialData={project} />
+    !loading && (
+      <ProjectForm onSubmit={handleSubmit} initialData={project} isUpdateForm />
+    )
   );
 };
 

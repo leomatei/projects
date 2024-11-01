@@ -77,6 +77,17 @@
   }
 }
 
+.back-button {
+  text-decoration: none;
+  font-size: 1.5rem;
+  line-height: 2.75rem;
+  font-weight: 600;
+  color: black;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+}
+
 .image-uploader-wrapper {
   border: 2px dashed #007bff;
   padding: 1rem;

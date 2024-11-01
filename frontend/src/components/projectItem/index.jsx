@@ -3,10 +3,7 @@ import Slider from 'react-slick';
 import EditSVG from './../../assets/edit.svg?react';
 import ClickSVG from './../../assets/click.svg?react';
 import DeleteSVG from './../../assets/delete.svg?react';
-import ImageSliderModal from '../imageSliderModal';
-import { useQueryClient } from '@tanstack/react-query';
-import { useModal } from '../../customHooks/modalContext';
-import { deleteProject } from '../../services/projectServices';
+import HandleOpenModal from '../../utils/handleModals';
 import './styles.scss';
 
 const ProjectItem = ({ project }) => {
@@ -18,45 +15,7 @@ const ProjectItem = ({ project }) => {
     slidesToScroll: 1,
     arrows: true,
   };
-  const queryClient = useQueryClient();
-  const { openModal, closeModal } = useModal();
-  const handleDelete = (project) => {
-    openModal({
-      title: 'Are you sure you want to delete this project?',
-      content: (
-        <>
-          <div className='delete-modal__text'>
-            <p>{project.title}</p>
-            <p>{project.description}</p>
-          </div>
-          <button
-            className='modal-button delete-button'
-            onClick={async () => {
-              try {
-                await deleteProject(project.id);
-                queryClient.invalidateQueries(['projects']);
-                closeModal();
-              } catch (error) {
-                console.error('Failed to delete project', error);
-              }
-            }}
-          >
-            Confirm
-          </button>
-        </>
-      ),
-      onCancel: closeModal,
-    });
-  };
-  const handleClickImage = (imageIndex) => {
-    openModal({
-      title: `Images for ${project.title}`,
-      content: (
-        <ImageSliderModal images={project.images} initialSlide={imageIndex} />
-      ),
-      onCancel: closeModal,
-    });
-  };
+  const { handleDelete, handleClickImage } = HandleOpenModal();
   return (
     <li className='project-item'>
       <h2 className='project-item__title'>{project.title}</h2>
@@ -81,7 +40,7 @@ const ProjectItem = ({ project }) => {
                 src={item.image_data}
                 alt={`Image ${item.id} of Project ${project.id}`}
                 className='project-item__slider__image-container__image'
-                onClick={() => handleClickImage(index)}
+                onClick={() => handleClickImage(project, index)}
               />
             </div>
           ))}
