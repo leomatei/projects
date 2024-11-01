@@ -21,6 +21,10 @@
     line-height: 2.75rem;
     font-weight: 500;
     width: 80%;
+    @media (max-width: 560px) {
+      font-size: 1rem;
+      line-height: 1.5rem;
+    }
   }
   &__buttons-wrapper {
     width: 100%;
@@ -34,12 +38,29 @@
       background-color: #0d92f4;
       color: white;
       padding: 0.5rem;
+      @media (max-width: 460px) {
+        display: flex;
+        font-size: 1rem;
+        line-height: 1.5rem;
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
     }
     button.custom-button {
       border: none;
     }
     a.custom-button {
       text-decoration: none;
+    }
+    @media (max-width: 623px) {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      .custom-button {
+        width: fit-content;
+      }
     }
   }
 }

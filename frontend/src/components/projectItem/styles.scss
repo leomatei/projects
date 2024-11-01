@@ -46,6 +46,9 @@
         object-fit: cover;
       }
     }
+    @media (max-width: 690px) {
+      width: 90%;
+    }
   }
   &__actions {
     display: flex;
@@ -72,6 +75,13 @@
       border: 2px solid white;
       padding: 0.25rem;
     }
+    @media (max-width: 450px) {
+      flex-direction: column;
+      align-items: center;
+      > * {
+        width: fit-content;
+      }
+    }
   }
 }
 
@@ -86,4 +96,7 @@
       display: none;
     }
   }
+}
+.slick-slider {
+  margin-bottom: 1.5rem;
 }
