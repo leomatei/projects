@@ -9,6 +9,7 @@ import Spinner from './components/spinner';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { setErrorMessage, setSuccessMessage } from './store/generalSlice';
+import AdminPanel from './pages/adminPanel';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,7 @@ const App = () => {
           <Route path='/' element={<HomePage />} />
           <Route path='/project' element={<NewProjectForm />} />
           <Route path='/project/:id' element={<UpdateProjectForm />} />
+          <Route path='/admin' element={<AdminPanel />} />
         </Routes>
       </Router>
     </>

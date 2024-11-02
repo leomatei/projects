@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Patch,
   Query,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
@@ -44,6 +45,14 @@ export class ProjectsController {
   @Put(':id')
   update(@Param('id') id: number, @Body() project: Partial<Project>) {
     return this.projectsService.update(id, project);
+  }
+
+  @Patch(':id')
+  async updateStatus(
+    @Param('id') id: number,
+    @Body('status') status: boolean,
+  ): Promise<{ message: string }> {
+    return await this.projectsService.updateStatus(id, status);
   }
 
   @Delete(':id')

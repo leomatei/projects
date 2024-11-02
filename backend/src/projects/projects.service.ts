@@ -79,6 +79,17 @@ export class ProjectsService {
     return updatedProject;
   }
 
+  async updateStatus(
+    id: number,
+    status: boolean,
+  ): Promise<{ message: string }> {
+    const result = await this.projectsRepository.update(id, { status });
+    if (result.affected === 0) {
+      throw new Error(`Project with ID ${id} not found`);
+    }
+    return { message: 'Updated' };
+  }
+
   async remove(id: number): Promise<void> {
     await this.projectsRepository.delete(id);
   }
