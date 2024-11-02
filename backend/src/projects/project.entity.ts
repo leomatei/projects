@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Image } from '../images/image.entity';
 
 @Entity()
@@ -17,4 +24,10 @@ export class Project {
 
   @OneToMany(() => Image, (image) => image.project, { cascade: true })
   images: Image[];
+
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: Date;
 }

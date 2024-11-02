@@ -1,44 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-
-import { fetchProjects, seedProjects } from '../../services/projectServices';
-
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import PlusSVG from './../../assets/plus.svg?react';
 import ProjectList from '../../components/projectsList';
 import { ModalProvider } from '../../customHooks/modalContext';
+import { seedProjects } from '../../services/projectServices';
+import { setProjects, setTotalProjects } from '../../store/projectsSlice';
 
 import './styles.scss';
 
 const HomePage = () => {
-  const queryClient = useQueryClient();
-  const [page, setPage] = useState(1);
-  const limit = 10;
-  const [projects, setProjects] = useState([]);
-  const { data, error, isLoading } = useQuery({
-    queryKey: ['projects', page],
-    staleTime: 1000 * 60 * 5,
-    queryFn: () =>
-      fetchProjects(page, limit).then((res) => {
-        setProjects((prevProj) => [...prevProj, ...res?.data]);
-        return res;
-      }),
-  });
-
+  const dispatch = useDispatch();
   const handleSeedProjects = async () => {
     try {
-      await seedProjects().then(() => {
-        queryClient.invalidateQueries(['projects']);
+      await seedProjects().then((res) => {
+        console.log(res);
+        dispatch(setProjects(res.data.projects));
+        dispatch(setTotalProjects(res.data.total));
       });
     } catch (error) {
       console.error('Error seeding projects:', error);
     }
   };
-  const handleLoadMore = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>An error occurred: {error.message}</div>;
 
   return (
     <ModalProvider>
@@ -46,8 +28,8 @@ const HomePage = () => {
         <h1 className='home-page__title'>Portfolio Website</h1>
         <p className='home-page__description'>
           <span>
-            You can store your project on this website. Provide links and
-            images.{' '}
+            You can store your projects on this website. Provide links and
+            images.
           </span>
           <br />
           <span>
@@ -66,10 +48,7 @@ const HomePage = () => {
             Add 10 more dummy projects
           </button>
         </div>
-        <ProjectList data={projects} />
-        <button className='custom-button' onClick={handleLoadMore}>
-          load moere
-        </button>
+        <ProjectList />
       </div>
     </ModalProvider>
   );

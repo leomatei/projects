@@ -17,8 +17,8 @@ export class ProjectsController {
 
   @Get('seed')
   async seed() {
-    await this.projectsService.addSampleProjects();
-    return { message: 'DB has rows completed now!' };
+    const res = await this.projectsService.addSampleProjects();
+    return { ...res, message: 'DB has rows completed now!' };
   }
 
   @Get()

@@ -1,11 +1,12 @@
 import React from 'react';
 import ImageSliderModal from '../components/imageSliderModal';
-import { useQueryClient } from '@tanstack/react-query';
+import { useDispatch } from 'react-redux';
 import { useModal } from '../customHooks/modalContext';
 import { deleteProject } from '../services/projectServices';
+import { deleteProject as deleteProjectSlice } from '../store/projectsSlice';
 
 const HandleOpenModal = () => {
-  const queryClient = useQueryClient();
+  const dispatch = useDispatch();
   const { openModal, closeModal } = useModal();
   const handleDelete = (project) => {
     openModal({
@@ -21,7 +22,8 @@ const HandleOpenModal = () => {
             onClick={async () => {
               try {
                 await deleteProject(project.id);
-                queryClient.invalidateQueries(['projects']);
+                dispatch(deleteProjectSlice(project.id));
+
                 closeModal();
               } catch (error) {
                 console.error('Failed to delete project', error);

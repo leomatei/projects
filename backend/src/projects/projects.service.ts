@@ -21,6 +21,9 @@ export class ProjectsService {
       relations: ['images'],
       skip: (page - 1) * limit,
       take: limit,
+      order: {
+        updated_at: 'DESC',
+      },
     });
     return { data: projects, total };
   }
@@ -38,7 +41,7 @@ export class ProjectsService {
     await Promise.all(
       images.map((image) => {
         return this.imageService.create({
-          image_data: image,
+          image_data: image.image_data,
           project: newProject,
         });
       }),
@@ -78,18 +81,22 @@ export class ProjectsService {
     await this.projectsRepository.delete(id);
   }
 
-  async addSampleProjects(): Promise<Project[]> {
+  async addSampleProjects(): Promise<{ projects: Project[]; total: number }> {
     const sampleProjects = Array.from({ length: 10 }, (_, index) => ({
       title: `Sample Project ${index + 1}`,
       description: `This is the description for sample project ${index + 1}.`,
       link: `http://example.com/sample_project_${index + 1}`,
     }));
 
-    const projectsSved = await Promise.all(
+    const projectsSaved = await Promise.all(
       sampleProjects.map((projectData) =>
         this.projectsRepository.save(projectData),
       ),
     );
-    return projectsSved;
+    const total = await this.projectsRepository.count();
+    return {
+      projects: projectsSaved.map((item) => ({ ...item, images: [] })),
+      total,
+    };
   }
 }
