@@ -1,26 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   fetchProjectData,
   updateProject,
 } from '../../services/projectServices';
 import ProjectForm from '../../components/projectForm';
+import {
+  setLoading,
+  setSuccessMessage,
+  setErrorMessage,
+} from '../../store/generalSlice';
 
 const UpdateProjectForm = () => {
+  const { loading } = useSelector((state) => state.general);
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [project, setProject] = useState();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const projectres = await fetchProjectData(params.id);
-
-        setLoading(false);
-        setProject(projectres);
+        dispatch(setLoading(true));
+        await fetchProjectData(params.id)
+          .then((res) => setProject(res))
+          .finally(() => dispatch(setLoading(false)));
       } catch (err) {
-        console.error('An error has occurred', err);
+        dispatch(setLoading(false));
+        console.error(err);
       }
     };
 
@@ -29,17 +37,29 @@ const UpdateProjectForm = () => {
 
   const handleSubmit = async (projectData) => {
     try {
-      await updateProject(params.id, projectData);
-      navigate('/');
+      dispatch(setLoading(true));
+      await updateProject(params.id, projectData)
+        .then(() => navigate('/'))
+        .finally(() => dispatch(setLoading(false)));
+      dispatch(setSuccessMessage('Project updated successfuly!'));
     } catch (error) {
+      dispatch(setLoading(false));
       console.error('Failed to update project:', error);
+      dispatch(setErrorMessage('Error while updating the project!'));
     }
   };
+  console.log(project);
 
   return (
-    !loading && (
-      <ProjectForm onSubmit={handleSubmit} initialData={project} isUpdateForm />
-    )
+    <>
+      {!loading && (
+        <ProjectForm
+          onSubmit={handleSubmit}
+          initialData={project}
+          isUpdateForm
+        />
+      )}
+    </>
   );
 };
 

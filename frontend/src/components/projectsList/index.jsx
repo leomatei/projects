@@ -9,6 +9,7 @@ import {
   incrementPage,
   setTotalProjects,
 } from '../../store/projectsSlice';
+import { setLoading } from '../../store/generalSlice';
 
 import './styles.scss';
 
@@ -24,10 +25,15 @@ const ProjectList = () => {
 
   const loadProjects = async () => {
     try {
-      const response = await fetchProjects(page, limit);
-      dispatch(addProjects(response.data));
-      dispatch(setTotalProjects(response.total));
+      dispatch(setLoading(true));
+      await fetchProjects(page, limit)
+        .then((res) => {
+          dispatch(addProjects(res.data));
+          dispatch(setTotalProjects(res.total));
+        })
+        .finally(() => dispatch(setLoading(false)));
     } catch (error) {
+      dispatch(setLoading(false));
       console.error('Error loading projects:', error);
     }
   };

@@ -4,6 +4,11 @@ import { useDispatch } from 'react-redux';
 import { useModal } from '../customHooks/modalContext';
 import { deleteProject } from '../services/projectServices';
 import { deleteProject as deleteProjectSlice } from '../store/projectsSlice';
+import {
+  setLoading,
+  setErrorMessage,
+  setSuccessMessage,
+} from '../store/generalSlice';
 
 const HandleOpenModal = () => {
   const dispatch = useDispatch();
@@ -21,12 +26,20 @@ const HandleOpenModal = () => {
             className='modal-button delete-button'
             onClick={async () => {
               try {
-                await deleteProject(project.id);
-                dispatch(deleteProjectSlice(project.id));
-
-                closeModal();
+                dispatch(setLoading(true));
+                await deleteProject(project.id)
+                  .then(() => {
+                    dispatch(deleteProjectSlice(project.id));
+                    dispatch(setSuccessMessage('Project deleted successfuly!'));
+                  })
+                  .finally(() => {
+                    closeModal();
+                    dispatch(setLoading(false));
+                  });
               } catch (error) {
-                console.error('Failed to delete project', error);
+                dispatch(setLoading(false));
+                console.error(error);
+                dispatch(setErrorMessage('Delete Error!'));
               }
             }}
           >

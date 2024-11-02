@@ -5,20 +5,31 @@ import ProjectList from '../../components/projectsList';
 import { ModalProvider } from '../../customHooks/modalContext';
 import { seedProjects } from '../../services/projectServices';
 import { setProjects, setTotalProjects } from '../../store/projectsSlice';
+import {
+  setLoading,
+  setSuccessMessage,
+  setErrorMessage,
+} from '../../store/generalSlice';
 
 import './styles.scss';
 
 const HomePage = () => {
   const dispatch = useDispatch();
+
   const handleSeedProjects = async () => {
     try {
-      await seedProjects().then((res) => {
-        console.log(res);
-        dispatch(setProjects(res.data.projects));
-        dispatch(setTotalProjects(res.data.total));
-      });
+      dispatch(setLoading(true));
+      await seedProjects()
+        .then((res) => {
+          dispatch(setProjects(res.data.projects));
+          dispatch(setTotalProjects(res.data.total));
+        })
+        .finally(() => dispatch(setLoading(false)));
+      dispatch(setSuccessMessage('Seed  successfuly!'));
     } catch (error) {
-      console.error('Error seeding projects:', error);
+      dispatch(setLoading(false));
+      console.error(error);
+      dispatch(setErrorMessage('Seed Error!'));
     }
   };
 

@@ -29,13 +29,13 @@ const ProjectForm = ({
   } = useImageUploader();
 
   useEffect(() => {
-    if (initialData) {
+    if (isUpdateForm) {
       setValue('title', initialData.title);
       setValue('description', initialData.description);
       setValue('link', initialData.link);
       setImageData(initialData.images);
     }
-  }, []);
+  }, [initialData]);
 
   const handleFormSubmit = async (data) => {
     const projectData = {
