@@ -48,7 +48,6 @@ const UpdateProjectForm = () => {
       dispatch(setErrorMessage('Error while updating the project!'));
     }
   };
-  console.log(project);
 
   return (
     <>

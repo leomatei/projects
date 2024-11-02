@@ -25,6 +25,9 @@ export class Project {
   @OneToMany(() => Image, (image) => image.project, { cascade: true })
   images: Image[];
 
+  @Column({ type: 'boolean', default: true })
+  status: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 

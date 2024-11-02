@@ -16,6 +16,7 @@ export class ProjectsService {
   async findAll(
     page: number = 1,
     limit: number = 10,
+    showAll: boolean = false,
   ): Promise<{ data: Project[]; total: number }> {
     const [projects, total] = await this.projectsRepository.findAndCount({
       relations: ['images'],
@@ -24,6 +25,7 @@ export class ProjectsService {
       order: {
         updated_at: 'DESC',
       },
+      where: showAll ? {} : { status: true },
     });
     return { data: projects, total };
   }

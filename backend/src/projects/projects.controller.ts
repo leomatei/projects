@@ -25,8 +25,10 @@ export class ProjectsController {
   async getProjects(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @Query('showAll') showAll: string = 'false',
   ): Promise<{ data: Project[]; total: number }> {
-    return this.projectsService.findAll(page, limit);
+    const showAllBool = showAll === 'true';
+    return this.projectsService.findAll(page, limit, showAllBool);
   }
 
   @Get(':id')
