@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import BackSVG from '../../assets/back-arrow.svg?react';
 import { useImageUploader } from '../../customHooks/useImageUploader';
@@ -27,6 +27,8 @@ const ProjectForm = ({
     getInputProps,
     isDragActive,
   } = useImageUploader();
+  const [totalFileSize, setTotalFileSize] = useState(0);
+  const maxFileSizeMB = 10 * 1024 * 1024;
 
   useEffect(() => {
     if (isUpdateForm) {
@@ -34,10 +36,27 @@ const ProjectForm = ({
       setValue('description', initialData.description);
       setValue('link', initialData.link);
       setImageData(initialData.images);
+      const initialSize = initialData.images.reduce(
+        (total, img) => total + img.size,
+        0
+      );
+      setTotalFileSize(initialSize);
     }
   }, [initialData]);
 
+  useEffect(() => {
+    const size = imageData.reduce((total, img) => {
+      console.log(img);
+      return total + img.image_data.length;
+    }, 0);
+    setTotalFileSize(size);
+  }, [imageData]);
+
   const handleFormSubmit = async (data) => {
+    if (totalFileSize > maxFileSizeMB) {
+      alert('Total file size should not exceed 10MB.');
+      return;
+    }
     const projectData = {
       title: data.title,
       description: data.description,
@@ -96,7 +115,8 @@ const ProjectForm = ({
             {...register('link', {
               required: 'Link is required',
               pattern: {
-                value: /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/.*)*$/,
+                value:
+                  /^(https?:\/\/)?([a-zA-Z0-9-]+(\.[a-zA-Z]{2,6})?|localhost)(:\d{1,5})?(\/.*)*$/,
                 message:
                   'Please enter a valid URL (e.g., google.com or http://google.com)',
               },
@@ -132,6 +152,12 @@ const ProjectForm = ({
               </div>
             ))}
           </div>
+          <p className='file-size-info'>
+            Total file size: {(totalFileSize / (1024 * 1024)).toFixed(2)} MB
+          </p>
+          {totalFileSize > maxFileSizeMB && (
+            <p className='error-text'>Total file size cannot exceed 10MB</p>
+          )}
         </div>
         <button type='submit'>
           {isUpdateForm ? 'Update Project' : 'Create Project'}
