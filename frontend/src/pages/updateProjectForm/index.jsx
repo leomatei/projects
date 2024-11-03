@@ -25,13 +25,13 @@ const UpdateProjectForm = () => {
         dispatch(setLoading(true));
         await fetchProjectData(params.id)
           .then((res) => setProject(res))
-          .finally(() => dispatch(setLoading(false)));
+          .then(() => dispatch(setLoading(false)));
       } catch (err) {
+        navigate('/');
         dispatch(setLoading(false));
         console.error(err);
       }
     };
-
     fetchData();
   }, [params.id]);
 

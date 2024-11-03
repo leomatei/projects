@@ -15,10 +15,24 @@ export class ImagesService {
     return this.imagesRepository.find();
   }
 
+  findOne(id: number): Promise<Image | null> {
+    return this.imagesRepository.findOne({ where: { id } });
+  }
+
   create(image: newImageDTO): Promise<Image> {
     return this.imagesRepository.save(image);
   }
-  async delete(id: number): Promise<Boolean> {
-    return await this.imagesRepository.delete(id).then((res) => !!res.affected);
+
+  async update(
+    id: number,
+    updateData: Partial<newImageDTO>,
+  ): Promise<Image | null> {
+    await this.imagesRepository.update(id, updateData);
+    return this.findOne(id); // return the updated image
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const result = await this.imagesRepository.delete(id);
+    return !!result.affected;
   }
 }

@@ -8,10 +8,13 @@ import {
   Put,
   Patch,
   Query,
+  NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Project } from './project.entity';
 import { newProjectDTO } from './project.dto';
+
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
@@ -33,17 +36,31 @@ export class ProjectsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.projectsService.findOne(id);
+  async findOne(@Param('id') id: number): Promise<Project> {
+    const project = await this.projectsService.findOne(id);
+    if (!project) {
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+    return project;
   }
 
   @Post()
-  create(@Body() project: newProjectDTO) {
+  async create(@Body() project: newProjectDTO): Promise<Project> {
+    if (!project.title || !project.link) {
+      throw new BadRequestException('Title and link are required');
+    }
     return this.projectsService.create(project);
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() project: Partial<Project>) {
+  async update(
+    @Param('id') id: number,
+    @Body() project: Partial<Project>,
+  ): Promise<Project> {
+    const existingProject = await this.projectsService.findOne(id);
+    if (!existingProject) {
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
     return this.projectsService.update(id, project);
   }
 
@@ -56,7 +73,11 @@ export class ProjectsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.projectsService.remove(id);
+  async remove(@Param('id') id: number): Promise<void> {
+    const existingProject = await this.projectsService.findOne(id);
+    if (!existingProject) {
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+    return await this.projectsService.remove(id);
   }
 }

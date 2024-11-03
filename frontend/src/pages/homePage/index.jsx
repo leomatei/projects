@@ -19,17 +19,17 @@ const HomePage = () => {
   const handleSeedProjects = async () => {
     try {
       dispatch(setLoading(true));
-      await seedProjects()
-        .then((res) => {
-          dispatch(setProjects(res.data.projects));
-          dispatch(setTotalProjects(res.data.total));
-        })
-        .finally(() => dispatch(setLoading(false)));
+      await seedProjects().then((res) => {
+        dispatch(setProjects(res.data.projects));
+        dispatch(setTotalProjects(res.data.total));
+      });
       dispatch(setSuccessMessage('Seed  successfuly!'));
     } catch (error) {
       dispatch(setLoading(false));
       console.error(error);
       dispatch(setErrorMessage('Seed Error!'));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

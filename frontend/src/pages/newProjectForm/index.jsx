@@ -16,14 +16,14 @@ const NewProjectForm = () => {
   const handleSubmit = async (projectData) => {
     try {
       dispatch(setLoading(true));
-      await createProject(projectData)
-        .then(() => navigate('/'))
-        .finally(() => dispatch(setLoading(false)));
+      await createProject(projectData).then(() => navigate('/'));
       dispatch(setSuccessMessage('Project created successfuly!'));
     } catch (error) {
       dispatch(setLoading(false));
       console.error(error);
       dispatch(setErrorMessage('Error while creating the project!'));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

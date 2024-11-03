@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './project.entity';
-import { ImagesService } from 'src/images/images.service';
+import { ImagesService } from '../images/images.service';
 import { newProjectDTO } from './project.dto';
 
 @Injectable()
@@ -38,7 +38,7 @@ export class ProjectsService {
   }
 
   async create(project: newProjectDTO): Promise<Project> {
-    const { images, ...restOfTheProject } = project;
+    const { images = [], ...restOfTheProject } = project;
     const newProject = await this.projectsRepository.save(restOfTheProject);
     await Promise.all(
       images.map((image) => {
@@ -52,7 +52,7 @@ export class ProjectsService {
   }
 
   async update(id: number, project: Partial<Project>): Promise<Project> {
-    const { images, ...partialProject } = project;
+    const { images = [], ...partialProject } = project;
     await this.projectsRepository.update(id, partialProject);
     const updatedProject = await this.projectsRepository.findOne({
       where: { id },
